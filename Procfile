@@ -1,0 +1,1 @@
+web: pip install Flask gunicorn uvicorn; gunicorn -w 4 'app:app'
