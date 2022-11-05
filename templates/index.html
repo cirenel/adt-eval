@@ -12,11 +12,21 @@
 <body>
         {% block content %}
 <div>
-        <h1>some test text is here.... neat. </h1> <h4>{{ time }}</h4>
+        <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>
         <div class = "container">
-                {{ wtf.quick_form(form) }}
+                <div class="row">
+                        <table>
+                        {%for row in table%}
+                        <tr>
+                                <td>{{row.show_id}}</td>
+                        </tr>
+                        {%endfor%}
+                </table>
+                </div>
         </div>
-
+<div>
+        {{ wtf.quick_form(form) }}
+</div>
         </div>
 {% endblock %}
 </body> 
