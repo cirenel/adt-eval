@@ -1,1 +1,1 @@
-web: pip install Flask gunicorn uvicorn flask-sqlalchemy Flask-WTF Flask-Bootstrap psycopg2; gunicorn -w 4 'app:app'
+web: pip install  gunicorn uvicorn Flask flask-sqlalchemy Flask-WTF Flask-Bootstrap psycopg2; gunicorn -w 4 'app:app'
