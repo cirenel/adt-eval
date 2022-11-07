@@ -16,9 +16,12 @@
         <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>
         <div class = "container">
                         {% if count > 1 %} <h1> {{ count }} rows found. </h1>
-                        {% else if count == 1%} <h1> {{ count }} row found. </h1>
-                        {% else %} <h1> No rows found. </h1>
+                        {% else %}
+                                {% if count == 1%} <h1> {{ count }} row found. </h1>
+                                {% else %} <h1> No rows found. </h1>
+                                {% endif %}
                         {% endif %}
+
                         <table>
                         <thead> <!--add links to these for sorting asc and desc-->
                                 <th>Title</th>
