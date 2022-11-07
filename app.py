@@ -10,6 +10,8 @@ from flask_wtf import FlaskForm
 from form import AddForm, EditForm, SearchForm, FilterForm, StarterForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
+from google.cloud.sql.connector import Connector, IPTypes
+
 
 
 app = Flask(__name__)
@@ -19,13 +21,7 @@ app = Flask(__name__)
 
 #wow. so secure. much secret.
 app.config['SECRET_KEY'] = "sekrit"
-USERNAME = "postgres"
-PASSWORD = "Windows2000"
-DBNAME = "nflix"
-PUBLIC_IP_ADDRESS ="34.138.118.222"
-PROJECT_ID ="adt-eval"
-INSTANCE_NAME ="adt-eval-nflix"
-db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
+
 #instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
 
 #app.config["SQLALCHEMY_DATABASE_URI"]= f"postgresql+pg8000://{USERNAME}:{PASSWORD}@/{DBNAME}?unix_sock={db_socket_dir}/{PUBLIC_IP_ADDRESS}/.s.PGSQL.5432"
@@ -35,27 +31,28 @@ db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
 db_user =   "postgres"
 db_pass = "Windows2000"
 db_name = "nflix"
-unix_socket_path = "/cloudsql/adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
+project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
+sql = "adt-eval-nflix"
 
-pool = sqlalchemy.create_engine(
-    # Equivalent URL:
-    # postgresql+pg8000://<db_user>:<db_pass>@/<db_name>
-    #                         ?unix_sock=<INSTANCE_UNIX_SOCKET>/.s.PGSQL.5432
-    # Note: Some drivers require the `unix_sock` query parameter to use a different key.
-    # For example, 'psycopg2' uses the path set to `host` in order to connect successfully.
-    sqlalchemy.engine.url.URL.create(
-        drivername="postgresql+psycopg2",
-        username=db_user,
-        password=db_pass,
-        database=db_name,
-        query={"unix_sock": "{}34.138.118.222:5432".format(unix_socket_path)},
-    ),
-    pool_size = 5,
-    max_overflow=2,
-    pool_timeout=30,
-    pool_recycle = 1800
-)
-app.config["SQLALCHEMY_DATABASE_URI"] = pool.url
+GOOGLE_APPLICATION_CREDENTIALS= '/cred.json' #this is real gross. 
+
+def getconn():
+    with Connector() as connector:
+        conn = connector.connect(
+            project, # Cloud SQL Instance Connection Name
+            "pg8000",
+            user=db_user,
+            password=db_pass,
+            db=db_name,
+            ip_type= IPTypes.PUBLIC  # IPTypes.PRIVATE for private IP
+        )
+        return conn
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql+pg8000://"
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "creator": getconn
+}
+
 Bootstrap(app)
 db = SQLAlchemy(app)
 with app.app_context():
