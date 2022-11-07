@@ -1,0 +1,61 @@
+
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<html>
+<head>
+        {% block styles %}
+        {{ super() }}
+        <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet"/>
+        {% endblock %}
+</head>
+
+<body>
+        {% block content %}
+<div>
+        <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>
+        <div class = "container">
+
+                        <table>
+                        <thead> <!--add links to these for sorting asc and desc-->
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Duration</th>
+                                <th>Description</th>
+                                <th>Genre</th>
+                                <th>Rating</th>
+                                <th>Director</th>
+                                <th>Cast</th>
+                        </thead>
+                        <tbody>
+                        {%for row in table.items%}
+
+                                <tr>
+
+                                <td style="width:10%;">{{row.title}}</td>
+                                <td style="width:10%;">{{row.media_type}}</td>
+                                <td style="width:10%;">{{row.duration}}</td>
+                                <td style="width:20%;">{{row.description}}</td>
+                                <td style="width:10%;">{{row.genre}}</td>
+                                <td style="width:10%;">{{row.rating}}</td>
+                                <td style="width:10%;">{{row.director}}</td>
+                                <td style="width:20%;">{{row.cast_list}}</td>
+                                <td>  <a href="{{ url_for('editEntry', show_id=row.show_id)}}" class="divBtn"> edit </a></td> 
+
+
+                        </tr>
+
+                        {%endfor%}
+                </tbody>
+                </table>
+
+                <div id="btnDiv">
+                        {% if table.has_prev %}<a class="divBtn" href="{{ url_for('showPage', page=table.prev_num) }}"><h3>&lt;&lt;&lt;&lt;</h3></a>{% else %} {% endif %} 
+                        {% if table.has_next %}<a class="divBtn" href="{{ url_for('showPage', page=table.next_num) }}"><h3>&gt;&gt;&gt;&gt;</h3></a>{% else %} {% endif %}
+
+                </div>
+        </div>
+        </div>
+{% endblock %}
+</body> 
+</html>

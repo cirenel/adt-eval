@@ -12,10 +12,9 @@
 <body>
         {% block content %}
 <div>
-        <h1>Media List Tool </h1> <h4>{{ time }}</h4>
+        <h1>Media List Tool : Edit and Add </h1> <h4>{{ time }}</h4>
         <div class = "container">
-                <a href="{{ url_for('showPage', page=1) }}"><div class="divBtn">  Browse Listings </div> </a>
-                <a href="{{ url_for('search') }}"><div class="divBtn">  Search Listings </div> </a>
+                    {{ wtf.quick_form(form) }}
         </div>
 </div>
 {% endblock %}

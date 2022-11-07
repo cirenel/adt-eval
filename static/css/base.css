@@ -18,11 +18,53 @@ tr:nth-child(even) {
     background-color: hsla(0, 0%, 100%, 0.25);
 }
 
+tr:hover {
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+}
+
+
+/*
 tr:nth-child(odd) {
     background-color: hsla(0, 0%, 0%, 0.25);
 }
+*/
 
 td {
     border: 1px black solid;
-    padding: 2px;
+    padding: 5px;
+    text-align: left;
+    vertical-align: text-top;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.divBtn {
+    display: inline-flex;
+    min-width: min-content;
+    max-width: max-content;
+    margin: 2px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px black solid;
+    vertical-align: middle;
+    background-color: hsla(0, 0%, 100%, 0.25);
+}
+
+.divBtn:hover {
+    display: inline-flex;
+    color: white;
+    background-color: black;
+    text-shadow: 5px 5px black;
+    text-decoration: none;
+}
+
+#btnDiv {
+    margin-left: auto;
+    margin-right: auto;
+    width: max-content;
 }
