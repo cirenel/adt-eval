@@ -12,7 +12,7 @@
 <body>
         {% block content %}
 <div>
-        <h1>Media List Tool : Search </h1> <h4>{{ time }}</h4>
+        <h1>Media List Tool : Search </h1> <h4>{{ time }}</h4>  <a href="{{ url_for('index') }}"><div class="divBtn">  Home </div> </a>
         <div class = "container">
                     {{ wtf.quick_form(form) }}
         </div>
