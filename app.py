@@ -48,7 +48,7 @@ pool = sqlalchemy.create_engine(
         username=db_user,
         password=db_pass,
         database=db_name,
-        query={"unix_sock": "{}/.s.PGSQL.5432".format(unix_socket_path)},
+        query={"unix_sock": "{}34.138.118.222:5432".format(unix_socket_path)},
     ),
     pool_size = 5,
     max_overflow=2,
@@ -140,8 +140,8 @@ class Entries(db.Model):
 # a Cloud SQL instance of Postgres.
 
 
-#from werkzeug.middleware.proxy_fix import ProxyFix
-#app.wsgi_app = ProxyFix(app.wsgi_app)
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
