@@ -25,6 +25,8 @@ app = Flask(__name__)
 #wow. so secure. much secret.
 app.config['SECRET_KEY'] = "sekrit"
 
+clickCnt = 0
+
 #instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
 #app.config["SQLALCHEMY_DATABASE_URI"]= f"postgresql+pg8000://{USERNAME}:{PASSWORD}@/{DBNAME}?unix_sock={db_socket_dir}/{PUBLIC_IP_ADDRESS}/.s.PGSQL.5432"
 #app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
@@ -174,6 +176,37 @@ def editEntry(show_id="s1", msg=""):
     form.runtime.data = result[0].duration
     form.yearReleased.data = result[0].release_year
     return render_template('editEntry.html', form=form, result=result, msg=msg)
+
+@app.route("/sortBy<string:sort>", methods=['GET'])
+def sortBy(sort):
+    #this is kinda gross. there *has* to be a better way
+    table = Entries.query.order_by(Entries.show_id).paginate(page=1, per_page=10)
+    global clickCnt
+    core = None
+    #ugh. update to 3.10 for match-case :-T
+    if( sort == "title"):
+        core = Entries.title
+    elif( sort == "type"):
+        core=Entries.media_type
+    elif( sort == "duration"):
+        core = Entries.duration
+    elif( sort == "description"):
+        core = Entries.description
+    elif( sort == "date_add"):
+        core = Entries.date_added
+    elif(sort == "country"):
+        core = Entries.country
+    elif(sort == "genre"):
+        core = Entries.genre
+    elif(sort == "director"):
+        core=Entries.director
+    elif(sort == "cast"):
+        core=Entries.cast_list
+    if( clickCnt % 2 == 1):
+        core = core.desc()
+    table = Entries.query.order_by(core).paginate(page=1, per_page=10)
+    clickCnt = clickCnt+1
+    return render_template('show.html', table=table)
 
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()

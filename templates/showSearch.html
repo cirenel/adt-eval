@@ -23,15 +23,15 @@
                         {% endif %}
 
                         <table>
-                        <thead> <!--add links to these for sorting asc and desc-->
-                                <th>Title</th>
-                                <th>Type</th>
-                                <th>Duration</th>
-                                <th>Description</th>
-                                <th>Genre</th>
-                                <th>Rating</th>
-                                <th>Director</th>
-                                <th>Cast</th>
+                        <thead> <!--add links to these for sorting asc and desc !table needs to be passed along with search filters already installed!-->
+                                <th><a href="{{ url_for('sortBy',  sort='title') }}"><div class="divBtn">Title</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='type') }}"><div class="divBtn">Type</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='duration') }}"><div class="divBtn">Duration</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='description') }}"><div class="divBtn">Description</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='genre') }}"><div class="divBtn">Genre</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='rating') }}"><div class="divBtn">Rating</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='director') }}"><div class="divBtn">Director</div></a></th>
+                                <th><a href="{{ url_for('sortBy',  sort='cast') }}"><div class="divBtn">Cast</div></a></th>
                         </thead>
                         <tbody>
                         {%for row in table%}

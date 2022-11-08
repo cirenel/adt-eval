@@ -18,7 +18,7 @@ tr:nth-child(even) {
     background-color: hsla(0, 0%, 100%, 0.25);
 }
 
-tr:hover {
+tbody>tr:hover {
     background-color: rgba(0, 0, 0, 0.75);
     color: white;
 }
