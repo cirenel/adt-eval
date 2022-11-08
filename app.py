@@ -3,7 +3,7 @@ from wsgiref.util import request_uri
 from requests import session
 import requests
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, insert, update, select, delete 
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask import Flask, render_template, request, redirect, url_for
@@ -35,11 +35,11 @@ db_name = "nflix"
 project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
 sql = "adt-eval-nflix"
 
+'''
 #this guy for local connect
-#app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_user}:{db_pass}@localhost:5432/{db_name}" #there has to be a way to put this guy in google cloud :think:
-
+app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_user}:{db_pass}@localhost:5432/{db_name}" #there has to be a way to put this guy in google cloud :think:
+'''
 #this guy for web deploy
-
 GOOGLE_APPLICATION_CREDENTIALS= '/cred.json' #this is real gross.
 def getconn():
     with Connector() as connector:
@@ -120,21 +120,32 @@ def search():
 @app.route("/add",methods=['GET', 'POST'])
 def addEntry():
     if request.method=='POST':
-            sqlUpdate = "INSERT INTO entries (title, media_type, director, cast_list, country, release_year, rating,duration) VALUES (\'"+request.form['mediaName']+"\', \'"+request.form['mediaType']+"\',  \'"+request.form['director']+"\', \'"+request.form['castList']+"\', \'"+request.form['country']+"\',  \'"+request.form['yearReleased']+"\', \'"+request.form['rating']+"\', \'"+request.form['runtime']+"\'"
-            print(sqlUpdate)
-            db.session.execute(sqlUpdate)
-            db.session.commit()
-            with app.app_context():
-                db.create_all()
-            msg = "added record"
-            return render_template('index.html', time=msg)
+        data={'show_id':"s"+str((db.session.query(Entries).count())+2),'title':request.form['mediaName'], 'media_type':request.form['mediaType'], 'director':request.form['director'], 'cast_list':request.form['castList'], 'country':request.form['country'], 'release_year':int(request.form['yearReleased']), 'rating':request.form['rating'], 'duration':request.form['runtime'], 'date_added':datetime.now().date(), 'genre':request.form['genres']}
+        cols = ', '.join(f'"{k}"' for k in data.keys())
+        vals = ', '.join(f':{k}' for k in data.keys())
+       # sqlUpdate = f"""INSERT INTO "entries" ({cols}) VALUES ({vals})"""
+       # print(sqlUpdate)
+       # db.session.execute(sqlUpdate, data)
+        stmt = insert(Entries).values(data)
+        db.session.execute(stmt)
+        db.session.commit()
+        with app.app_context():
+            db.create_all()
+        msg = "added record"
+        return render_template('index.html', time=msg)
     form=AddForm()
     return render_template('editEntry.html', form=form)
 
-@app.route("/delete", methods=['POST'])
-def deleteEntry():
+@app.route("/delete<string:show_id>", methods=['GET','POST'])
+def deleteEntry(show_id):
+    print(show_id)
     entryPer = 10
-    #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
+    stmt = delete(Entries).where(Entries.show_id == show_id)
+    db.session.execute(stmt)
+    db.session.commit()
+    with app.app_context():
+        db.create_all()
+    print(stmt)
     tab = Entries.query.order_by(Entries.show_id).paginate(page=1, per_page=entryPer)
     return render_template('show.html', table=tab)
 

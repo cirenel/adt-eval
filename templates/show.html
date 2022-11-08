@@ -42,7 +42,7 @@
                                 <td style="width:20%;">{{row.cast_list}}</td>
                                 <td>
                                         <a href="{{ url_for('editEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block; margin:5px;"> edit </a>
-                                        <a href="{{ url_for('deleteEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block;margin:5px;"> delete </a>
+                                        <a href="{{ url_for('deleteEntry', show_id=row.show_id+"")}}" class="divBtn" style="display:inline-block;margin:5px;"> delete </a>
                                 </td>
                         </tr>
 
