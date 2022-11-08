@@ -13,25 +13,28 @@
 <body>
         {% block content %}
 <div>
-        <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>  <a href="{{ url_for('index') }}"><div class="divBtn">  Home </div> </a>
+        <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>  
+        <a href="{{ url_for('index') }}"><div class="divBtn">  Home </div> </a> 
+        <a href="{{ url_for('index') }}"><div class="divBtn">  Filter </div> </a>
         <div class = "container">
 
                         <table>
-                        <thead> <!--add links to these for sorting asc and desc !sorted table needs to be passed along for correct pagination!-->
-                                <th><a href="{{ url_for('sortBy',  sort='title') }}"><div class="divBtn">Title</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='type') }}"><div class="divBtn">Type</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='duration') }}"><div class="divBtn">Duration</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='description') }}"><div class="divBtn">Description</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='genre') }}"><div class="divBtn">Genre</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='rating') }}"><div class="divBtn">Rating</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='director') }}"><div class="divBtn">Director</div></a></th>
-                                <th><a href="{{ url_for('sortBy',  sort='cast') }}"><div class="divBtn">Cast</div></a></th>
+                        <thead>
+                                <tr>
+                                        <th><a href="{{ url_for('sortBy',  sort='title', page=1) }}"><div class="divBtn">Title</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='type', page=1) }}"><div class="divBtn">Type</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='duration', page=1) }}"><div class="divBtn">Duration</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='description', page=1) }}"><div class="divBtn">Description</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='genre', page=1) }}"><div class="divBtn">Genre</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='rating', page=1) }}"><div class="divBtn">Rating</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='director', page=1) }}"><div class="divBtn">Director</div></a></th>
+                                        <th><a href="{{ url_for('sortBy',  sort='cast', page=1) }}"><div class="divBtn">Cast</div></a></th>
+                                </tr>
                         </thead>
                         <tbody>
                         {%for row in table.items%}
 
                                 <tr>
-
                                 <td style="width:10%;">{{row.title}}</td>
                                 <td style="width:10%;">{{row.media_type}}</td>
                                 <td style="width:10%;">{{row.duration}}</td>

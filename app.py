@@ -65,7 +65,7 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
-
+orderBy = None
 
 ###############
 # app routing #
@@ -81,14 +81,19 @@ def index():
     countryOptions = Entries.query.with_entities(Entries.country).distinct()
     mediaTypeOptions = Entries.query.with_entities(Entries.media_type).distinct()
     form.search.choices = mediaTypeOptions
-
+    global tab
+    global orderBy
+    orderBy= Entries.show_id
+    tab = Entries.query.order_by(orderBy).paginate(page=1, per_page=10)
     return render_template('index.html', time=time.strftime("%H:%M -- %d/%m/%y"), form=form)
 
 @app.route("/show<int:page>",methods=['GET'])
 def showPage(page=1):
+    global orderBy
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
-    tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=entryPer)
+    tab = Entries.query.order_by(orderBy).paginate(page=page, per_page=10)
+
     return render_template('show.html', table=tab)
 
 @app.route("/search",methods=['GET', 'POST'])
@@ -112,6 +117,7 @@ def search():
         sqlQuery = sqlQuery+ titleArg+" AND "+typeArg+" AND "+rateArg+" AND "+castArg+" AND "+dirArg+" AND "+durArg+" AND "+countArg
 #        sqlQuery = "SELECT * FROM entries WHERE title LIKE \'%test%\'"
         print(">> "+sqlQuery)
+        global tab
         tab = db.session.execute(sqlQuery).all()
         #print(len(tab))
         return render_template('showSearch.html', table=tab, count=len(tab))
@@ -177,10 +183,11 @@ def editEntry(show_id="s1", msg=""):
     form.yearReleased.data = result[0].release_year
     return render_template('editEntry.html', form=form, result=result, msg=msg)
 
-@app.route("/sortBy<string:sort>", methods=['GET'])
-def sortBy(sort):
+@app.route("/sortBy<string:sort><int:page>", methods=['GET'])
+def sortBy(sort, page):
     #this is kinda gross. there *has* to be a better way
-    table = Entries.query.order_by(Entries.show_id).paginate(page=1, per_page=10)
+    global orderBy
+   # tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=10)
     global clickCnt
     core = None
     #ugh. update to 3.10 for match-case :-T
@@ -204,9 +211,10 @@ def sortBy(sort):
         core=Entries.cast_list
     if( clickCnt % 2 == 1):
         core = core.desc()
-    table = Entries.query.order_by(core).paginate(page=1, per_page=10)
+    orderBy = core
+    tab = Entries.query.order_by(core).paginate(page=page, per_page=10)
     clickCnt = clickCnt+1
-    return render_template('show.html', table=table)
+    return render_template('show.html', table=tab)
 
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()
