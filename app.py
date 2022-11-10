@@ -3,7 +3,7 @@ from wsgiref.util import request_uri
 from requests import session
 import requests
 import sqlalchemy
-from sqlalchemy import create_engine, insert, update, select, delete 
+from sqlalchemy import create_engine, insert, update, select, delete
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask import Flask, render_template, request, redirect, url_for
@@ -37,7 +37,7 @@ db_name = "nflix"
 project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
 sql = "adt-eval-nflix"
 
-'''
+
 #this guy for local connect
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_user}:{db_pass}@localhost:5432/{db_name}" #there has to be a way to put this guy in google cloud :think:
 '''
@@ -59,13 +59,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql+pg8000://"
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "creator": getconn
 }
-
+'''
 
 Bootstrap(app)
 db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
 orderBy = None
+filterBy = None 
 
 ###############
 # app routing #

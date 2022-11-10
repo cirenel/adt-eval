@@ -19,7 +19,7 @@ tr:nth-child(even) {
 }
 
 tbody>tr:hover {
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: hsla(0, 0%, 0%, 0.5);
     color: white;
 }
 
