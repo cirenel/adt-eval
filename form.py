@@ -9,45 +9,19 @@ class FilterForm(FlaskForm):
     #foreach distinct rating and genre, make a checkbox --> where get this and how subdivide?
     submit = SubmitField('Filter')
 
-
-class EditForm(FlaskForm):
+class BaseForm(FlaskForm):
     mediaName = StringField('Name')
     mediaType = StringField('Type')
-    runtime = StringField('Runtime')
-    genres = StringField('Genre')
-    rating = StringField('Rating')
     director = StringField('Director')
     castList = StringField('Cast')
     country = StringField('Country')
-    yearReleased = StringField('Year')
-    description = TextAreaField('Description')
-    submit = SubmitField('Edit')
-
-class AddForm(FlaskForm):
-    mediaName = StringField('Name')
-    mediaType = StringField('Type')
     runtime = StringField('Runtime')
-    genres = StringField('Genre')
-    rating = StringField('Rating')
-    director = StringField('Director')
-    castList = StringField('Cast')
-    country = StringField('Country')
+    dateAdded = StringField('Date Added')
     yearReleased = StringField('Year')
-    description = TextAreaField('Description')
-    submit = SubmitField('Add')
-
-class SearchForm(FlaskForm):
-    mediaName = StringField('Name')
-    mediaType = StringField('Type')
-    runtime = StringField('Runtime')
-    genres = StringField('Genre')
     rating = StringField('Rating')
-    director = StringField('Director')
-    castList = StringField('Cast')
-    country = StringField('Country')
-    yearReleased = StringField('Year')
+    genres = StringField('Genre')
     description = TextAreaField('Description')
-    submit = SubmitField('Search')
+    submit = SubmitField('CHANGETHIS')
 
 class StarterForm(FlaskForm):
     browse=SubmitField("Browse Listings")

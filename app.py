@@ -1,3 +1,4 @@
+from email.mime import base
 from platform import release
 from wsgiref.util import request_uri
 from requests import session
@@ -6,14 +7,15 @@ import sqlalchemy
 from sqlalchemy import create_engine, insert, update, select, delete
 from flask_sqlalchemy import SQLAlchemy
 import os
+from form import  BaseForm, FilterForm, StarterForm
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from form import AddForm, EditForm, SearchForm, FilterForm, StarterForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from google.cloud.sql.connector import Connector, IPTypes
+
 
 
 
@@ -65,8 +67,11 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
+#
 orderBy = None
-filterBy = None 
+filterBy = None
+lastPull = None
+
 
 ###############
 # app routing #
@@ -74,26 +79,33 @@ filterBy = None
 
 @app.route("/",methods=['GET'])
 def index():
-    time = datetime.now()
+#    global ratingOptions
+#    global countryOptions
+#    global mediaTypeOptions
+
     #form options puller
-    options = Entries.query.with_entities(Entries.rating).distinct()
-    form = StarterForm()
-    ratingOptions = Entries.query.with_entities(Entries.rating).distinct()
-    countryOptions = Entries.query.with_entities(Entries.country).distinct()
-    mediaTypeOptions = Entries.query.with_entities(Entries.media_type).distinct()
-    form.search.choices = mediaTypeOptions
-    global tab
+    form = BaseForm()
+#    options = Entries.query.with_entities(Entries.rating).distinct()
+#    ratingOptions = Entries.query.with_entities(Entries.rating).distinct()
+#    countryOptions = Entries.query.with_entities(Entries.country).distinct()
+#    mediaTypeOptions = Entries.query.with_entities(Entries.media_type).distinct()
+#    form.mediaType.choices = mediaTypeOptions
+#    form.country.choices = countryOptions
+#    form.rating.choices = ratingOptions
+    global lastPull
     global orderBy
     orderBy= Entries.show_id
-    tab = Entries.query.order_by(orderBy).paginate(page=1, per_page=10)
-    return render_template('index.html', time=time.strftime("%H:%M -- %d/%m/%y"), form=form)
+    lastPull = Entries.query.order_by(orderBy)
+    return render_template('index.html', form=form)
 
 @app.route("/show<int:page>",methods=['GET'])
 def showPage(page=1):
     global orderBy
+    global lastPull
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
-    tab = Entries.query.order_by(orderBy).paginate(page=page, per_page=10)
+    lastPull = Entries.query.order_by(orderBy)
+    tab = lastPull.paginate(page=page, per_page=10)
 
     return render_template('show.html', table=tab)
 
@@ -118,12 +130,11 @@ def search():
         sqlQuery = sqlQuery+ titleArg+" AND "+typeArg+" AND "+rateArg+" AND "+castArg+" AND "+dirArg+" AND "+durArg+" AND "+countArg
 #        sqlQuery = "SELECT * FROM entries WHERE title LIKE \'%test%\'"
         print(">> "+sqlQuery)
-        global tab
         tab = db.session.execute(sqlQuery).all()
-        #print(len(tab))
         return render_template('showSearch.html', table=tab, count=len(tab))
     else:
-        form=SearchForm()
+        form=BaseForm()
+        form['submit'].label.text = "Search"
         return render_template('search.html', form=form)
 
 @app.route("/add",methods=['GET', 'POST'])
@@ -141,8 +152,11 @@ def addEntry():
         with app.app_context():
             db.create_all()
         msg = "added record"
+        global lastPull
+        lastPull = Entries.query.order_by(orderBy)
         return render_template('index.html', time=msg)
-    form=AddForm()
+    form=BaseForm()
+    form['submit'].label.text = "Add Entry"
     return render_template('editEntry.html', form=form)
 
 @app.route("/delete<string:show_id>", methods=['GET','POST'])
@@ -155,8 +169,9 @@ def deleteEntry(show_id):
     with app.app_context():
         db.create_all()
     print(stmt)
-    tab = Entries.query.order_by(Entries.show_id).paginate(page=1, per_page=entryPer)
-    return render_template('show.html', table=tab)
+    global lastPull
+    lastPull = Entries.query.order_by(orderBy)
+    return render_template('show.html', table=lastPull.paginate(page=1, per_page=entryPer))
 
 @app.route("/edit<string:show_id>",methods=['GET', 'POST'])
 def editEntry(show_id="s1", msg=""):
@@ -168,10 +183,10 @@ def editEntry(show_id="s1", msg=""):
         with app.app_context():
             db.create_all()
         msg = "updated record"
-    form = EditForm()
+        global lastPull
+        lastPull = Entries.query.order_by(orderBy)
     result = Entries.query.filter(Entries.show_id == show_id).all()
-    print(show_id)
-    print(len(result))
+    form = BaseForm()
     form.mediaName.data = result[0].title
     form.mediaType.data = result[0].media_type
     form.description.data = result[0].description
@@ -182,6 +197,7 @@ def editEntry(show_id="s1", msg=""):
     form.rating.data = result[0].rating
     form.runtime.data = result[0].duration
     form.yearReleased.data = result[0].release_year
+    form['submit'].label.text = "Edit Entry"
     return render_template('editEntry.html', form=form, result=result, msg=msg)
 
 @app.route("/sortBy<string:sort><int:page>", methods=['GET'])
@@ -213,9 +229,10 @@ def sortBy(sort, page):
     if( clickCnt % 2 == 1):
         core = core.desc()
     orderBy = core
-    tab = Entries.query.order_by(core).paginate(page=page, per_page=10)
+    global lastPull
+    lastPull = Entries.query.order_by(core)
     clickCnt = clickCnt+1
-    return render_template('show.html', table=tab)
+    return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
 
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()

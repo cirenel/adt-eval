@@ -1,24 +1,12 @@
-{% extends 'bootstrap/base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
 
-<html>
-<head>
-        {% block styles %}
-        {{ super() }}
-        <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet"/>
-        {% endblock %}
-</head>
-
-<body>
-        {% block content %}
+{% block content %}
 <div>
-        <h1>Media List Tool </h1> <h4>{{ time }}</h4>
+        <h1>Media List Tool </h1>
         <div class = "container">
                 <a href="{{ url_for('showPage', page=1) }}"><div class="divBtn">  Browse Listings </div> </a>
                 <a href="{{ url_for('search') }}"><div class="divBtn">  Search Listings </div> </a>
                 <a href="{{ url_for('addEntry') }}"><div class="divBtn">  Add Listing </div> </a>
         </div>
-</div>
+    </div>
 {% endblock %}
-</body>
-</html>
