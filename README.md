@@ -17,7 +17,7 @@ POST:
 - provides link to filter and sort resulting table
 - pagenumber indicates how many pages into the pagination
 
-/sortBy/<string>  
+/sortBy/string  
 - displays paginated results from current table sorted by the selected column
 - ascending/descending toggle by number of clicks
 - string indicates which column name the currently displayed table is being sorted on
