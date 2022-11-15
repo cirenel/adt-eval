@@ -108,6 +108,8 @@ def showPage(page=1):
 @app.route("/showFilter", methods=['POST'])
 def showFilter():
     global lastPull
+    if lastPull is None:  
+        lastPull = Entries.query.order_by(orderBy)
     tab = lastPull
 
     if len(request.form['title'])> 0:
