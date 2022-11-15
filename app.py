@@ -13,9 +13,6 @@ from form import  BaseForm, FilterForm, StarterForm
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 from google.cloud.sql.connector import Connector, IPTypes
 
 
@@ -297,8 +294,8 @@ class Genres(db.Model):
     genre = db.Column(db.String)
 
 
-from werkzeug.middleware.proxy_fix import ProxyFix
-app.wsgi_app = ProxyFix(app.wsgi_app)
+#from werkzeug.middleware.proxy_fix import ProxyFix
+#app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
