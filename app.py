@@ -27,8 +27,8 @@ clickCnt = 0
 #app.config["SQLALCHEMY_DATABASE_URI"]= f"postgresql+pg8000://{USERNAME}:{PASSWORD}@/{DBNAME}?unix_sock={db_socket_dir}/{PUBLIC_IP_ADDRESS}/.s.PGSQL.5432"
 #app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
-from werkzeug.middleware.proxy_fix import ProxyFix
-app.wsgi_app = ProxyFix(app.wsgi_app)
+#from werkzeug.middleware.proxy_fix import ProxyFix
+#app.wsgi_app = ProxyFix(app.wsgi_app)
 
 db_user = "postgres"
 db_pass = "Windows2000"
@@ -36,7 +36,7 @@ db_name = "nflix"
 project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
 sql = "adt-eval-nflix"
 
-'''
+
 #this guy for local connect
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_user}:{db_pass}@localhost:5432/{db_name}" #there has to be a way to put this guy in google cloud :think:
 '''
@@ -58,7 +58,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql+pg8000://"
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "creator": getconn
 }
-
+'''
 
 Bootstrap(app)
 db = SQLAlchemy(app)
