@@ -13,6 +13,7 @@
 <body>
         {% block content %}
 <div>
+        {% include "filterForm.html" ignore missing %}
         <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>
         <a href="{{ url_for('index') }}"><div class="divBtn">  Home </div> </a>
         <a href="{{ url_for('index') }}"><div class="divBtn">  Filter </div> </a>
@@ -38,8 +39,8 @@
                         </thead>
                         <tbody>
                         {%for row in table%}
-                                <tr>
-                                <td style="width:10%;">{{row.title}}</td>
+                                <tr class="row">
+                                <td  style="width:10%;">{{row.title}}</td>
                                 <td style="width:10%;">{{row.media_type}}</td>
                                 <td style="width:10%;">{{row.duration}}</td>
                                 <td style="width:20%;">{{row.description}}</td>

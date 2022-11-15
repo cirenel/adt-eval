@@ -42,6 +42,13 @@ table {
     margin-right: auto;
 }
 
+fieldset {
+    display: inline;
+    border: 1px black solid;
+    padding: 5px;
+    margin: 2px;
+}
+
 form {
     padding: 2px;
     align-content: space-between 5px;
@@ -89,4 +96,15 @@ form {
     margin-left: auto;
     margin-right: auto;
     width: max-content;
+}
+
+#filter {
+    background-color: rgb(150, 186, 181);
+    position: absolute;
+    top: 10px;
+    left: 15%;
+    border: 1px black solid;
+    border-radius: 5px;
+    width: 70%;
+    visibility: hidden;
 }

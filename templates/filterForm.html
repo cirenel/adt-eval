@@ -1,0 +1,79 @@
+<div id="filter">
+    <form style = "align-items: baseline;" id="filterForm" method="POST" action="{{ url_for('showFilter' ) }}">
+            <label>Title: </label><input type="text" name="title"/>
+
+            <fieldset ><legend>Type of Media:</legend>
+            <input type="checkbox" name="type" value="tv" > TV Show
+            <input type="checkbox" name="type" value="movie" > Movie
+            </fieldset>
+
+            <fieldset><legend>Genre:</legend>
+                    <select name="genre" multiple >
+                            <option value="Action & Adventure" >Action & Adventure</option>
+                            <option value="Anime Features" >Anime Features</option>
+                            <option value="Anime Series" >Anime Series</option>
+                            <option value="British TV Shows" >British TV Shows</option>
+                            <option value="Children & Family Movies" >Children & Family Movies</option>
+                            <option value="Classic & Cult TV" >Classic & Cult TV</option>
+                            <option value="Classic Movies" >Classic Movies</option>
+                            <option value="Comedies" >Comedies</option>
+                            <option value="Crime TV Shows" >Crime TV Shows</option>
+                            <option value="Cult Movies" >Cult Movies</option>
+                            <option value="Documentaries" >Documentaries</option>
+                            <option value="Docuseries" >Docuseries</option>
+                            <option value="Dramas" >Dramas</option>
+                            <option value="Faith & Spirituality" >Faith & Spirituality</option>
+                            <option value="Horror Movies" >Horror Movies</option>
+                            <option value="Independent Movies" >Independent Movies</option>
+                            <option value="International Movies" >International Movies</option>
+                            <option value="International TV Shows" >International TV Shows</option>
+                            <option value="Kids TV" >Kids TV</option>
+                            <option value="Korean TV Shows" >Korean TV Shows</option>
+                            <option value="LGBTQ Movies" >LGBTQ Movies</option>
+                            <option value="Movies" >Movies</option>
+                            <option value="Music & Musicals" >Music & Musicals</option>
+                            <option value="Reality TV" >Reality TV</option>
+                            <option value="Romantic Movies" >Romantic Movies</option>
+                            <option value="Romantic TV Shows" >Romantic TV Shows</option>
+                            <option value="Sci-Fi & Fantasy" >Sci-Fi & Fantasy</option>
+                            <option value="Science & Nature TV" >Science & Nature TV</option>
+                            <option value="Spanish-Language TV Shows" >Spanish-Language TV Shows</option>
+                            <option value="Sports Movies" >Sports Movies</option>
+                            <option value="Stand-Up Comedy" >Stand-Up Comedy</option>
+                            <option value="Stand-Up Comedy & Talk Shows" >Stand-Up Comedy & Talk Shows</option>
+                            <option value="TV Action & Adventure" >TV Action & Adventure</option>
+                            <option value="TV Comedies" >TV Comedies</option>
+                            <option value="TV Dramas" >TV Dramas</option>
+                            <option value="TV Horror" >TV Horror</option>
+                            <option value="TV Mysteries" >TV Mysteries</option>
+                            <option value="TV Sci-Fi & Fantasy" >TV Sci-Fi & Fantasy</option>
+                            <option value="TV Shows" >TV Shows</option>
+                            <option value="TV Thrillers" >TV Thrillers</option>
+                            <option value="Teen TV Shows" >Teen TV Shows</option>
+                            <option value="Thrillers" >Thrillers</option>
+                    </select>
+            </fieldset>
+
+            <fieldset ><legend>Rating:</legend>
+                    <select name="rating" >
+                            <option value="" ></option>
+                            <option value="G" >G</option>
+                            <option value="NC-17" >NC-17</option>
+                            <option value="NR" >NR</option>
+                            <option value="TV-14" >TV-14</option>
+                            <option value="TV-G" >TV-G</option>
+                            <option value="TV-MA" >TV-MA</option>
+                            <option value="TV-Y" >TV-Y</option>
+                            <option value="TV-Y7" >TV-Y7</option>
+                            <option value="TV-Y7-FV" >TV-Y7-FV</option>
+                    </select>
+            </fieldset>
+
+            <label>Duration: </label><input type="text" name="duration"/>
+            <label>Director: </label><input type="text"  name="director"/>
+            <label>Cast: </label><input type="text"  name="cast"/>
+
+            <input type="submit" />
+            <button onclick="document.getElementById('filter').setAttribute('style', 'visibility:hidden;');"> Cancel </button>
+    </form>
+</div>

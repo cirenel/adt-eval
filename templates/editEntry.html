@@ -12,6 +12,7 @@
 <body>
         {% block content %}
 <div>
+        {% include "filterForm.html" ignore missing %}
         <h1>Media List Tool : Edit and Add </h1>
         <a href="{{ url_for('index') }}"><div class="divBtn">  Home </div> </a>
         <div class = "container">

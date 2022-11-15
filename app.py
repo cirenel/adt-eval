@@ -1,7 +1,9 @@
 from email.mime import base
 from platform import release
+import re
+from tkinter import Entry
 from wsgiref.util import request_uri
-from requests import session
+from requests import RequestException, session
 import requests
 import sqlalchemy
 from sqlalchemy import create_engine, insert, update, select, delete
@@ -83,8 +85,6 @@ def index():
 #    global countryOptions
 #    global mediaTypeOptions
 
-    #form options puller
-    form = BaseForm()
 #    options = Entries.query.with_entities(Entries.rating).distinct()
 #    ratingOptions = Entries.query.with_entities(Entries.rating).distinct()
 #    countryOptions = Entries.query.with_entities(Entries.country).distinct()
@@ -96,24 +96,53 @@ def index():
     global orderBy
     orderBy= Entries.show_id
     lastPull = Entries.query.order_by(orderBy)
-    return render_template('index.html', form=form)
+    return render_template('index.html')
 
-@app.route("/show<int:page>",methods=['GET'])
+@app.route("/show<int:page>",methods=['GET', 'POST'])
 def showPage(page=1):
     global orderBy
     global lastPull
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
-    lastPull = Entries.query.order_by(orderBy)
+    #lastPull = Entries.query.order_by(orderBy)
     tab = lastPull.paginate(page=page, per_page=10)
 
     return render_template('show.html', table=tab)
 
+@app.route("/showFilter", methods=['POST'])
+def showFilter():
+    global lastPull
+    tab = lastPull
+
+    if len(request.form['title'])> 0:
+        tab = tab.filter(Entries.title.contains(request.form['title']))
+
+    if len(request.form['duration'])> 0:
+        tab = tab.filter(Entries.duration.contains(request.form['duration']))
+
+    if len(request.form['director'] )> 0:
+        tab = tab.filter(Entries.director.contains(request.form['director']))
+
+    if len(request.form['cast'])> 0:
+        tab = tab.filter(Entries.cast_list.contains(request.form['cast']))
+
+    if len(request.form.getlist('type')) > 0:
+        for t in request.form.getlist('type'):
+            tab = tab.filter(Entries.type.contains(t))
+
+    if len(request.form.getlist('genre')) > 0:
+        for g in request.form.getlist('genre'):
+            tab = tab.filter(Entries.genre.contains(g))
+
+    if len(request.form['rating']) > 0:
+        tab = tab.filter(Entries.rating.contains(request.form['rating']))
+
+    lastPull = tab.order_by(orderBy)
+    return render_template('show.html', table=tab.paginate(page=1, per_page=10))
+
 @app.route("/search",methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
-        print("boop")
-        print(request.headers)
         sqlQuery = "SELECT * FROM entries WHERE "
         titleArg = (lambda:"entries.title LIKE '%'", lambda:"entries.title LIKE \'%"+request.form['mediaName']+"%\'")[request.form['mediaName']!=""]()
         typeArg = (lambda:"entries.media_type LIKE '%'", lambda:"entries.media_type LIKE \'%"+request.form['mediaType']+"%\'")[request.form['mediaType']!=""]()
@@ -233,6 +262,10 @@ def sortBy(sort, page):
     lastPull = Entries.query.order_by(core)
     clickCnt = clickCnt+1
     return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
+
+#@app.route("/showFilter", methods=['GET','POST'])
+#def showFilter():
+#    return render_template('holder.html')
 
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()
