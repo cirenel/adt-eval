@@ -99,7 +99,8 @@ def showPage(page=1):
     global lastPull
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
-    #lastPull = Entries.query.order_by(orderBy)
+    if lastPull is None:  
+        lastPull = Entries.query.order_by(orderBy)
     tab = lastPull
 
     return render_template('show.html', table=tab.paginate(page=page, per_page=10))
