@@ -32,6 +32,9 @@ clickCnt = 0
 #app.config["SQLALCHEMY_DATABASE_URI"]= f"postgresql+pg8000://{USERNAME}:{PASSWORD}@/{DBNAME}?unix_sock={db_socket_dir}/{PUBLIC_IP_ADDRESS}/.s.PGSQL.5432"
 #app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app)
+
 db_user =   "postgres"
 db_pass = "Windows2000"
 db_name = "nflix"
@@ -294,8 +297,7 @@ class Genres(db.Model):
     genre = db.Column(db.String)
 
 
-#from werkzeug.middleware.proxy_fix import ProxyFix
-#app.wsgi_app = ProxyFix(app.wsgi_app)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
