@@ -1,5 +1,8 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:Flask
+FROM python:3.10
+WORKDIR /
+COPY . .
 RUN apt-get install -qy python3-psycopg2
+RUN apt-get install gunicorn
 RUN pip install gunicorn
 RUN pip install uvicorn
 RUN pip install werkzeug

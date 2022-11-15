@@ -15,9 +15,6 @@ from datetime import datetime
 from flask_bootstrap import Bootstrap
 from google.cloud.sql.connector import Connector, IPTypes
 
-
-
-
 app = Flask(__name__)
 #################
 # configuration #
@@ -35,7 +32,7 @@ clickCnt = 0
 from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
-db_user =   "postgres"
+db_user = "postgres"
 db_pass = "Windows2000"
 db_name = "nflix"
 project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
