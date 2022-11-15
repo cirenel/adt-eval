@@ -1,4 +1,4 @@
-FROM baseImage
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:Flask
 RUN apt-get install -qy python3-psycopg2
 RUN pip install gunicorn
 RUN pip install uvicorn
@@ -9,3 +9,4 @@ RUN pip install Flask
 RUN pip install flask-sqlalchemy 
 RUN pip install Flask-WTF 
 RUN pip install Flask-bootstrap 
+RUN echo "end of line"

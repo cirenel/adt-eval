@@ -1,1 +1,1 @@
-web: pip install gunicorn uvicorn werkzeug "cloud-sql-python-connector[pg8000]" psycopg2-binary Flask flask-sqlalchemy Flask-WTF Flask-bootstrap ; gunicorn -w 4 app:app
+web:  gunicorn -w 4 app:app
