@@ -1,1 +1,1 @@
-web: pip install gunicorn uvicorn psycopg2-binary Flask flask-sqlalchemy Flask-WTF Flask-Bootstrap; pip install "cloud-sql-python-connector[pg8000]"; gunicorn -w 4 'app:app';
+web: pip install gunicorn uvicorn "cloud-sql-python-connector[pg8000]" psycopg2-binary Flask flask-sqlalchemy Flask-WTF Flask-bootstrap ; gunicorn -w 4 app:app
