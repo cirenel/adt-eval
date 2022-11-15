@@ -20,6 +20,7 @@ app = Flask(__name__)
 
 #wow. so secure. much secret.
 app.config['SECRET_KEY'] = "sekrit"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 clickCnt = 0
 
