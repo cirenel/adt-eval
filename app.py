@@ -90,8 +90,7 @@ def index():
     global lastPull
     global orderBy
     orderBy= Entries.show_id
-    if lastPull is None:
-        lastPull = Entries.query.order_by(orderBy)
+    lastPull = Entries.query.order_by(orderBy)
     return render_template('index.html')
 
 @app.route("/show<int:page>",methods=['GET', 'POST'])
@@ -101,19 +100,13 @@ def showPage(page=1):
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
     #lastPull = Entries.query.order_by(orderBy)
-    if lastPull is None:
-        lastPull = Entries.query.order_by(orderBy)
-   
-    tab = lastPull.paginate(page=page, per_page=10)
+    tab = lastPull
 
-    return render_template('show.html', table=tab)
+    return render_template('show.html', table=tab.paginate(page=page, per_page=10))
 
 @app.route("/showFilter", methods=['POST'])
 def showFilter():
     global lastPull
-    if lastPull is None:
-        lastPull = Entries.query.order_by(orderBy)
-   
     tab = lastPull
 
     if len(request.form['title'])> 0:
@@ -237,6 +230,7 @@ def sortBy(sort, page):
     global orderBy
    # tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=10)
     global clickCnt
+    global lastPull
     core = None
     #ugh. update to 3.10 for match-case :-T
     if( sort == "title"):
@@ -260,14 +254,11 @@ def sortBy(sort, page):
     if( clickCnt % 2 == 1):
         core = core.desc()
     orderBy = core
-    global lastPull
     lastPull = Entries.query.order_by(core)
     clickCnt = clickCnt+1
     return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
 
-#@app.route("/showFilter", methods=['GET','POST'])
-#def showFilter():
-#    return render_template('holder.html')
+
 
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()
