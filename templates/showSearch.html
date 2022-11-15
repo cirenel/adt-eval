@@ -14,19 +14,19 @@
         {% block content %}
 <div>
         {% include "filterForm.html" ignore missing %}
-        <h1>Let's Browse Some Media... </h1> <h4>{{ time }}</h4>
+        <h1>Let's Search Some Media... </h1> <h4>{{ time }}</h4>
         <a href="{{ url_for('index') }}"><div class="divBtn">  Home </div> </a>
         <a href="{{ url_for('index') }}"><div class="divBtn">  Filter </div> </a>
 
-        <div class = "container">
-                        {% if count > 1 %} <h1> {{ count }} rows found. </h1>
-                        {% else %}
-                                {% if count == 1%} <h1> {{ count }} row found. </h1>
-                                {% else %} <h1> No rows found. </h1>
-                                {% endif %}
+        <div>{% if count > 1 %} <h1> {{ count }} rows found. </h1>
+                {% else %}
+                        {% if count == 1%} <h1> {{ count }} row found. </h1>
+                        {% else %} <h1> No rows found. </h1>
                         {% endif %}
-
-                        <table>
+                {% endif %}
+        </div>
+        <div class = "container">
+                <table>
                         <thead> <!--add links to these for sorting asc and desc !table needs to be passed along with search filters already installed!-->
                                 <th><a href="{{ url_for('sortBy',  sort='title', page=1) }}"><div class="divBtn">Title</div></a></th>
                                 <th><a href="{{ url_for('sortBy',  sort='type', page=1) }}"><div class="divBtn">Type</div></a></th>
@@ -39,24 +39,22 @@
                         </thead>
                         <tbody>
                         {%for row in table%}
-                                <tr class="row">
-                                <td  style="width:10%;">{{row.title}}</td>
-                                <td style="width:10%;">{{row.media_type}}</td>
-                                <td style="width:10%;">{{row.duration}}</td>
-                                <td style="width:20%;">{{row.description}}</td>
-                                <td style="width:10%;">{{row.genre}}</td>
-                                <td style="width:10%;">{{row.rating}}</td>
-                                <td style="width:10%;">{{row.director}}</td>
-                                <td style="width:20%;">{{row.cast_list}}</td>
-                                <td>
-                                        <a href="{{ url_for('editEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block; margin:5px;"> edit </a>
-                                        <a href="{{ url_for('deleteEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block;margin:5px;"> delete </a>
-                                </td>
-
-                        </tr>
-
+                                <tr>
+                                        <td style="width:10%;">{{row.title}}</td>
+                                        <td style="width:10%;">{{row.media_type}}</td>
+                                        <td style="width:10%;">{{row.duration}}</td>
+                                        <td style="width:15%;">{{row.description}}</td>
+                                        <td style="width:10%;">{{row.genre}}</td>
+                                        <td style="width:10%;">{{row.rating}}</td>
+                                        <td style="width:10%;">{{row.director}}</td>
+                                        <td style="width:15%;">{{row.cast_list}}</td>
+                                        <td style="width:10%;">
+                                                <a href="{{ url_for('editEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block; margin:5px;"> edit </a>
+                                                <a href="{{ url_for('deleteEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block;margin:5px;"> delete </a>
+                                        </td>
+                                </tr>
                         {%endfor%}
-                </tbody>
+                        </tbody>
                 </table>
 
                 <div id="btnDiv">

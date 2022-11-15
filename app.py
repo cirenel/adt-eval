@@ -94,7 +94,7 @@ def index():
     lastPull = Entries.query.order_by(orderBy)
     return render_template('index.html')
 
-@app.route("/show<int:page>",methods=['GET', 'POST'])
+@app.route("/show/<int:page>",methods=['GET', 'POST'])
 def showPage(page=1):
     global orderBy
     global lastPull
@@ -106,7 +106,7 @@ def showPage(page=1):
 
     return render_template('show.html', table=tab.paginate(page=page, per_page=10))
 
-@app.route("/showFilter", methods=['POST'])
+@app.route("/filter", methods=['POST'])
 def showFilter():
     global lastPull
     if lastPull is None:  
@@ -187,7 +187,7 @@ def addEntry():
     form['submit'].label.text = "Add Entry"
     return render_template('editEntry.html', form=form)
 
-@app.route("/delete<string:show_id>", methods=['GET','POST'])
+@app.route("/delete/<string:show_id>", methods=['GET','POST'])
 def deleteEntry(show_id):
     print(show_id)
     entryPer = 10
@@ -201,7 +201,7 @@ def deleteEntry(show_id):
     lastPull = Entries.query.order_by(orderBy)
     return render_template('show.html', table=lastPull.paginate(page=1, per_page=entryPer))
 
-@app.route("/edit<string:show_id>",methods=['GET', 'POST'])
+@app.route("/edit/<string:show_id>",methods=['GET', 'POST'])
 def editEntry(show_id="s1", msg=""):
     if request.method=='POST':
         sqlUpdate = "UPDATE entries SET title= \'"+request.form['mediaName']+"\', media_type= \'"+request.form['mediaType']+"\', director= \'"+request.form['director']+"\', cast_list= \'"+request.form['castList']+"\',  country= \'"+request.form['country']+"\',   release_year= \'"+request.form['yearReleased']+"\',  rating= \'"+request.form['rating']+"\',  duration= \'"+request.form['runtime']+"\'  WHERE show_id=\'"+show_id+"\'"
@@ -228,7 +228,7 @@ def editEntry(show_id="s1", msg=""):
     form['submit'].label.text = "Edit Entry"
     return render_template('editEntry.html', form=form, result=result, msg=msg)
 
-@app.route("/sortBy<string:sort><int:page>", methods=['GET'])
+@app.route("/sortBy/<string:sort>/<int:page>", methods=['GET'])
 def sortBy(sort, page):
     #this is kinda gross. there *has* to be a better way
     global orderBy

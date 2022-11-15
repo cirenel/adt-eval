@@ -39,12 +39,12 @@
                                 <td style="width:10%;">{{row.title}}</td>
                                 <td style="width:10%;">{{row.media_type}}</td>
                                 <td style="width:10%;">{{row.duration}}</td>
-                                <td style="width:20%;">{{row.description}}</td>
+                                <td style="width:15%;">{{row.description}}</td>
                                 <td style="width:10%;">{{row.genre}}</td>
                                 <td style="width:10%;">{{row.rating}}</td>
                                 <td style="width:10%;">{{row.director}}</td>
-                                <td style="width:20%;">{{row.cast_list}}</td>
-                                <td>
+                                <td style="width:15%;">{{row.cast_list}}</td>
+                                <td style="width:10%;">
                                         <a href="{{ url_for('editEntry', show_id=row.show_id)}}" class="divBtn" style="display:inline-block; margin:5px;"> edit </a>
                                         <a href="{{ url_for('deleteEntry', show_id=row.show_id+"")}}" class="divBtn" style="display:inline-block;margin:5px;"> delete </a>
                                 </td>
