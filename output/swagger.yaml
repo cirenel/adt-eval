@@ -9,42 +9,6 @@
     "url" : "https://virtserver.swaggerhub.com/CILUKE/eval/0",
     "description" : "SwaggerHub API Auto Mocking"
   } ],
-  "paths" : {
-/artists:
-    get:
-      description: Returns a list of artists 
-      #  ----- Added lines  ----------------------------------------
-      responses:
-        '200':
-          description: Successfully returned a list of artists
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - username
-                  properties:
-                    artist_name:
-                      type: string
-                    artist_genre:
-                      type: string
-                    albums_recorded:
-                      type: integer
-                    username:
-                      type: string
-
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:   
-                  message:
-                    type: string
-
-   },
+  "paths" : { },
   "components" : { }
 }
