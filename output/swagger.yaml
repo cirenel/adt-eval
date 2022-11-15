@@ -1,14 +1,26 @@
 {
-  "openapi" : "3.0.0",
+  "openapi" : "3.0.1",
   "info" : {
-    "title" : "eval",
-    "description" : "",
+    "title" : "adt-eval",
+    "description" : "adt-eval Nov-2022",
     "version" : "0"
   },
   "servers" : [ {
-    "url" : "https://virtserver.swaggerhub.com/CILUKE/eval/0",
-    "description" : "SwaggerHub API Auto Mocking"
+    "url" : "/"
   } ],
   "paths" : { },
-  "components" : { }
+  "components" : {
+    "schemas" : {
+      "Entry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "description" : "contains the listing information for a netflix entry including: \ntitle \nrating\nruntime\ndate of release\ndate added\ndescription\ndirector list\ncast list        "
+      }
+    }
+  }
 }
