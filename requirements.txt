@@ -17,4 +17,4 @@ SQLAlchemy==1.4.43
 tomli==2.0.1
 Werkzeug==2.2.2
 WTForms==3.0.1
-yarl==1.7.0
+
