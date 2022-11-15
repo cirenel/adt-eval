@@ -297,8 +297,8 @@ class Genres(db.Model):
     genre = db.Column(db.String)
 
 
-#from werkzeug.middleware.proxy_fix import ProxyFix
-#app.wsgi_app = ProxyFix(app.wsgi_app)
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
