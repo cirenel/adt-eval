@@ -1,19 +1,21 @@
-from email.mime import base
 from platform import release
-import re
-from tkinter import Entry
 from wsgiref.util import request_uri
-from requests import RequestException, session
+from requests import session
 import requests
 import sqlalchemy
 from sqlalchemy import create_engine, insert, update, select, delete
 from flask_sqlalchemy import SQLAlchemy
 import os
-from form import  BaseForm, FilterForm, StarterForm
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from form import AddForm, EditForm, SearchForm, FilterForm, StarterForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 from google.cloud.sql.connector import Connector, IPTypes
+
+
 
 app = Flask(__name__)
 #################
@@ -29,10 +31,7 @@ clickCnt = 0
 #app.config["SQLALCHEMY_DATABASE_URI"]= f"postgresql+pg8000://{USERNAME}:{PASSWORD}@/{DBNAME}?unix_sock={db_socket_dir}/{PUBLIC_IP_ADDRESS}/.s.PGSQL.5432"
 #app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
-from werkzeug.middleware.proxy_fix import ProxyFix
-app.wsgi_app = ProxyFix(app.wsgi_app)
-
-db_user = "postgres"
+db_user =   "postgres"
 db_pass = "Windows2000"
 db_name = "nflix"
 project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:instance'
@@ -66,11 +65,8 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
-#
 orderBy = None
-filterBy = None
-lastPull = None
-
+filterBy = None 
 
 ###############
 # app routing #
@@ -78,68 +74,34 @@ lastPull = None
 
 @app.route("/",methods=['GET'])
 def index():
-#    global ratingOptions
-#    global countryOptions
-#    global mediaTypeOptions
-
-#    options = Entries.query.with_entities(Entries.rating).distinct()
-#    ratingOptions = Entries.query.with_entities(Entries.rating).distinct()
-#    countryOptions = Entries.query.with_entities(Entries.country).distinct()
-#    mediaTypeOptions = Entries.query.with_entities(Entries.media_type).distinct()
-#    form.mediaType.choices = mediaTypeOptions
-#    form.country.choices = countryOptions
-#    form.rating.choices = ratingOptions
-    global lastPull
+    time = datetime.now()
+    #form options puller
+    options = Entries.query.with_entities(Entries.rating).distinct()
+    form = StarterForm()
+    ratingOptions = Entries.query.with_entities(Entries.rating).distinct()
+    countryOptions = Entries.query.with_entities(Entries.country).distinct()
+    mediaTypeOptions = Entries.query.with_entities(Entries.media_type).distinct()
+    form.search.choices = mediaTypeOptions
+    global tab
     global orderBy
     orderBy= Entries.show_id
-    lastPull = Entries.query.order_by(orderBy)
-    return render_template('index.html')
+    tab = Entries.query.order_by(orderBy).paginate(page=1, per_page=10)
+    return render_template('index.html', time=time.strftime("%H:%M -- %d/%m/%y"), form=form)
 
-@app.route("/show<int:page>",methods=['GET', 'POST'])
+@app.route("/show<int:page>",methods=['GET'])
 def showPage(page=1):
     global orderBy
-    global lastPull
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
-    #lastPull = Entries.query.order_by(orderBy)
-    tab = lastPull.paginate(page=page, per_page=10)
+    tab = Entries.query.order_by(orderBy).paginate(page=page, per_page=10)
 
     return render_template('show.html', table=tab)
-
-@app.route("/showFilter", methods=['POST'])
-def showFilter():
-    global lastPull
-    tab = lastPull
-
-    if len(request.form['title'])> 0:
-        tab = tab.filter(Entries.title.contains(request.form['title']))
-
-    if len(request.form['duration'])> 0:
-        tab = tab.filter(Entries.duration.contains(request.form['duration']))
-
-    if len(request.form['director'] )> 0:
-        tab = tab.filter(Entries.director.contains(request.form['director']))
-
-    if len(request.form['cast'])> 0:
-        tab = tab.filter(Entries.cast_list.contains(request.form['cast']))
-
-    if len(request.form.getlist('type')) > 0:
-        for t in request.form.getlist('type'):
-            tab = tab.filter(Entries.type.contains(t))
-
-    if len(request.form.getlist('genre')) > 0:
-        for g in request.form.getlist('genre'):
-            tab = tab.filter(Entries.genre.contains(g))
-
-    if len(request.form['rating']) > 0:
-        tab = tab.filter(Entries.rating.contains(request.form['rating']))
-
-    lastPull = tab.order_by(orderBy)
-    return render_template('show.html', table=tab.paginate(page=1, per_page=10))
 
 @app.route("/search",methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
+        print("boop")
+        print(request.headers)
         sqlQuery = "SELECT * FROM entries WHERE "
         titleArg = (lambda:"entries.title LIKE '%'", lambda:"entries.title LIKE \'%"+request.form['mediaName']+"%\'")[request.form['mediaName']!=""]()
         typeArg = (lambda:"entries.media_type LIKE '%'", lambda:"entries.media_type LIKE \'%"+request.form['mediaType']+"%\'")[request.form['mediaType']!=""]()
@@ -156,11 +118,12 @@ def search():
         sqlQuery = sqlQuery+ titleArg+" AND "+typeArg+" AND "+rateArg+" AND "+castArg+" AND "+dirArg+" AND "+durArg+" AND "+countArg
 #        sqlQuery = "SELECT * FROM entries WHERE title LIKE \'%test%\'"
         print(">> "+sqlQuery)
+        global tab
         tab = db.session.execute(sqlQuery).all()
+        #print(len(tab))
         return render_template('showSearch.html', table=tab, count=len(tab))
     else:
-        form=BaseForm()
-        form['submit'].label.text = "Search"
+        form=SearchForm()
         return render_template('search.html', form=form)
 
 @app.route("/add",methods=['GET', 'POST'])
@@ -178,11 +141,8 @@ def addEntry():
         with app.app_context():
             db.create_all()
         msg = "added record"
-        global lastPull
-        lastPull = Entries.query.order_by(orderBy)
         return render_template('index.html', time=msg)
-    form=BaseForm()
-    form['submit'].label.text = "Add Entry"
+    form=AddForm()
     return render_template('editEntry.html', form=form)
 
 @app.route("/delete<string:show_id>", methods=['GET','POST'])
@@ -195,9 +155,8 @@ def deleteEntry(show_id):
     with app.app_context():
         db.create_all()
     print(stmt)
-    global lastPull
-    lastPull = Entries.query.order_by(orderBy)
-    return render_template('show.html', table=lastPull.paginate(page=1, per_page=entryPer))
+    tab = Entries.query.order_by(Entries.show_id).paginate(page=1, per_page=entryPer)
+    return render_template('show.html', table=tab)
 
 @app.route("/edit<string:show_id>",methods=['GET', 'POST'])
 def editEntry(show_id="s1", msg=""):
@@ -209,10 +168,10 @@ def editEntry(show_id="s1", msg=""):
         with app.app_context():
             db.create_all()
         msg = "updated record"
-        global lastPull
-        lastPull = Entries.query.order_by(orderBy)
+    form = EditForm()
     result = Entries.query.filter(Entries.show_id == show_id).all()
-    form = BaseForm()
+    print(show_id)
+    print(len(result))
     form.mediaName.data = result[0].title
     form.mediaType.data = result[0].media_type
     form.description.data = result[0].description
@@ -223,7 +182,6 @@ def editEntry(show_id="s1", msg=""):
     form.rating.data = result[0].rating
     form.runtime.data = result[0].duration
     form.yearReleased.data = result[0].release_year
-    form['submit'].label.text = "Edit Entry"
     return render_template('editEntry.html', form=form, result=result, msg=msg)
 
 @app.route("/sortBy<string:sort><int:page>", methods=['GET'])
@@ -255,14 +213,9 @@ def sortBy(sort, page):
     if( clickCnt % 2 == 1):
         core = core.desc()
     orderBy = core
-    global lastPull
-    lastPull = Entries.query.order_by(core)
+    tab = Entries.query.order_by(core).paginate(page=page, per_page=10)
     clickCnt = clickCnt+1
-    return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
-
-#@app.route("/showFilter", methods=['GET','POST'])
-#def showFilter():
-#    return render_template('holder.html')
+    return render_template('show.html', table=tab)
 
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()
@@ -294,7 +247,8 @@ class Genres(db.Model):
     genre = db.Column(db.String)
 
 
-
+#from werkzeug.middleware.proxy_fix import ProxyFix
+#app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
