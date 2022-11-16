@@ -13,20 +13,22 @@ from datetime import datetime
 from flask_bootstrap import Bootstrap
 from google.cloud.sql.connector import Connector, IPTypes
 
+
+#######################
+# setup/configuration #
+#######################
+
 app = Flask(__name__)
-#################
-# configuration #
-#################
 
 #wow. so secure. much secret.
 app.config['SECRET_KEY'] = "sekrit"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-clickCnt = 0
+clickCnt = 0 #used to count number of times a sorting option has been clicked on
 
+#working with different sqlalchemy configurations for db connection
 #instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
 #app.config["SQLALCHEMY_DATABASE_URI"]= f"postgresql+pg8000://{USERNAME}:{PASSWORD}@/{DBNAME}?unix_sock={db_socket_dir}/{PUBLIC_IP_ADDRESS}/.s.PGSQL.5432"
-#app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
 #from werkzeug.middleware.proxy_fix import ProxyFix
 #app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -38,10 +40,10 @@ project = "adt-eval:us-east1:adt-eval-nflix"  # e.g. '/cloudsql/project:region:i
 sql = "adt-eval-nflix"
 
 '''
-#this guy for local connect
+#comment in this line for local db connect
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_user}:{db_pass}@localhost:5432/{db_name}" #there has to be a way to put this guy in google cloud :think:
 '''
-#this guy for web deploy
+#comment in this block for when web deploying for cloud SQL connection
 GOOGLE_APPLICATION_CREDENTIALS= '/cred.json' #this is real gross.
 def getconn():
     with Connector() as connector:
@@ -62,13 +64,15 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 
 
 Bootstrap(app)
+#build db tables
 db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
-#
-orderBy = None
-filterBy = None
-lastPull = None
+
+#global app-wide vars
+orderBy = None #sorting values
+filterBy = None #filtering values
+lastPull = None #last table from DB query
 
 
 ###############
@@ -77,17 +81,6 @@ lastPull = None
 
 @app.route("/",methods=['GET'])
 def index():
-#    global ratingOptions
-#    global countryOptions
-#    global mediaTypeOptions
-
-#    options = Entries.query.with_entities(Entries.rating).distinct()
-#    ratingOptions = Entries.query.with_entities(Entries.rating).distinct()
-#    countryOptions = Entries.query.with_entities(Entries.country).distinct()
-#    mediaTypeOptions = Entries.query.with_entities(Entries.media_type).distinct()
-#    form.mediaType.choices = mediaTypeOptions
-#    form.country.choices = countryOptions
-#    form.rating.choices = ratingOptions
     global lastPull
     global orderBy
     orderBy= Entries.show_id
@@ -100,16 +93,15 @@ def showPage(page=1):
     global lastPull
     entryPer = 10
     #tab = db.session.execute(db.select(Entries).order_by(Entries.show_id)).paginate(page,entryPer)
-    if lastPull is None:  
+    if lastPull is None:
         lastPull = Entries.query.order_by(orderBy)
     tab = lastPull
-
     return render_template('show.html', table=tab.paginate(page=page, per_page=10))
 
 @app.route("/filter", methods=['POST'])
 def showFilter():
     global lastPull
-    if lastPull is None:  
+    if lastPull is None:
         lastPull = Entries.query.order_by(orderBy)
     tab = lastPull
 
@@ -263,7 +255,7 @@ def sortBy(sort, page):
     return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
 
 
-
+#just used to pull the information and check for signs of life
 def demoSel():
     result  = db.session.execute(db.select(Entries).order_by(Entries.show_id)).scalars()
     return result
@@ -285,6 +277,7 @@ class Entries(db.Model):
     date_added  = db.Column(db.DateTime)
     release_year = db.Column(db.Integer)
 
+#additional tables --> thought being to normalize the db
 class Countries(db.Model):
     country_id = db.Column(db.String, primary_key=True)
     country = db.Column(db.String)
