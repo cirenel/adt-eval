@@ -54,7 +54,7 @@ https://app.swaggerhub.com/apis/CILUKE/eval/0
   
   
 Current Known Issues/Next Steps:  
-- investigating inconsistent behavior with table persistence differences in locally hosted v. web hosted versions of app
+- investigating inconsistent behavior with table persistence differences in locally hosted v. web hosted versions of app --> missing session info?
 - did not configure database to autoincrement primary key --> currently new entries are assigned a primary key in a very hacky manner based on the number of existing entries
 - not crazy about an in repo json with credentials as a means for connection --> try other options
 - database data not cleaned. inconsistencies and issues with type and formatting (e.g. duration units, durations showing up as ratings, etc)

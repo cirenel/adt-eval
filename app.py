@@ -24,6 +24,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "sekrit"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+#global app-wide vars
+orderBy = None #sorting values
+filterBy = None #filtering values
+lastPull = None #last table from DB query
 clickCnt = 0 #used to count number of times a sorting option has been clicked on
 
 #working with different sqlalchemy configurations for db connection
@@ -68,10 +72,6 @@ db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
 
-#global app-wide vars
-orderBy = None #sorting values
-filterBy = None #filtering values
-lastPull = None #last table from DB query
 
 
 ###############
@@ -237,6 +237,7 @@ def deleteEntry(show_id):
 @app.route("/edit/<string:show_id>",methods=['GET', 'POST'])
 def editEntry(show_id="s1", msg=""):
     if request.method=='POST':
+        #todo --> clean this up with a sqlalchemy update 
         sqlUpdate = "UPDATE entries SET title= \'"+stripApos(request.form['mediaName'])+"\', media_type= \'"+stripApos(request.form['mediaType'])+"\', director= \'"+stripApos(request.form['director'])+"\', cast_list= \'"+stripApos(request.form['castList'])+"\',  country= \'"+request.form['country']+"\',   release_year= \'"+request.form['yearReleased']+"\',  rating= \'"+request.form['rating']+"\',  duration= \'"+request.form['runtime']+"\'  WHERE show_id=\'"+show_id+"\'"
         print(sqlUpdate)
         db.session.execute(sqlUpdate)
