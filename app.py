@@ -62,7 +62,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "creator": getconn
 }
 
-
 Bootstrap(app)
 #build db tables
 db = SQLAlchemy(app)
@@ -119,7 +118,7 @@ def showFilter():
 
     if len(request.form.getlist('type')) > 0:
         for t in request.form.getlist('type'):
-            tab = tab.filter(Entries.type.contains(t))
+            tab = tab.filter(Entries.media_type.contains(t))
 
     if len(request.form.getlist('genre')) > 0:
         for g in request.form.getlist('genre'):
@@ -134,23 +133,24 @@ def showFilter():
 @app.route("/search",methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
-        sqlQuery = "SELECT * FROM entries WHERE "
-        titleArg = (lambda:"entries.title LIKE '%'", lambda:"entries.title LIKE \'%"+request.form['mediaName']+"%\'")[request.form['mediaName']!=""]()
-        typeArg = (lambda:"entries.media_type LIKE '%'", lambda:"entries.media_type LIKE \'%"+request.form['mediaType']+"%\'")[request.form['mediaType']!=""]()
-        rateArg = (lambda:"entries.rating LIKE '%'", lambda:"entries.rating LIKE \'%"+request.form['rating']+"%\'")[request.form['rating']!=""]()
-        castArg = (lambda:"entries.cast_list LIKE '%'", lambda:"entries.cast_list LIKE \'%"+request.form['castList']+"%\'")[request.form['castList']!=""]()
-        dirArg = (lambda:"entries.director LIKE '%'", lambda:"entries.director LIKE \'%"+request.form['director']+"%\'")[request.form['director']!=""]()
-        countArg = (lambda:"entries.country LIKE '%'", lambda:"entries.country LIKE \'%"+request.form['country']+"%\'")[request.form['country']!=""]()
+        sqlQuery = "SELECT * FROM entries WHERE entries.show_id LIKE '%' "
+        titleArg = (lambda:"", lambda:"AND entries.title LIKE \'%"+request.form['mediaName']+"%\'")[request.form['mediaName']!=""]()
+        typeArg = (lambda:"", lambda:"AND entries.media_type LIKE \'%"+request.form['mediaType']+"%\'")[request.form['mediaType']!=""]()
+        rateArg = (lambda:"", lambda:"AND entries.rating LIKE \'%"+request.form['rating']+"%\'")[request.form['rating']!=""]()
+        castArg = (lambda:"", lambda:"AND entries.cast_list LIKE \'%"+request.form['castList']+"%\'")[request.form['castList']!=""]()
+        dirArg = (lambda:"", lambda:"AND entries.director LIKE \'%"+request.form['director']+"%\'")[request.form['director']!=""]()
+        countArg = (lambda:"", lambda:"AND entries.country LIKE \'%"+request.form['country']+"%\'")[request.form['country']!=""]()
         #print(">> "+countArg)
-        relYArg = (lambda:"entries.release_year LIKE '%'", lambda:"entries.release_year LIKE \'%"+request.form['yearReleased']+"%\'")[request.form['yearReleased']!=""]() #coming back a number. comp diff
-        durArg = (lambda:"entries.duration LIKE '%'", lambda:"entries.duration LIKE \'%"+request.form['runtime']+"%\'")[request.form['runtime']!=""]()
+        relYArg = (lambda:"", lambda:"AND entries.release_year LIKE \'%"+request.form['yearReleased']+"%\'")[request.form['yearReleased']!=""]() #coming back a number. comp diff
+        durArg = (lambda:"", lambda:"AND entries.duration LIKE \'%"+request.form['runtime']+"%\'")[request.form['runtime']!=""]()
 
       #  Arg = (lambda:"", lambda:"entries. LIKE \'%"+request.form['']+"%\'")[request.form['']!=""]()
       #  Arg = (lambda:"", lambda:"entries. LIKE \'%"+request.form['']+"%\'")[request.form['']!=""]()
-        sqlQuery = sqlQuery+ titleArg+" AND "+typeArg+" AND "+rateArg+" AND "+castArg+" AND "+dirArg+" AND "+durArg+" AND "+countArg
+        sqlQuery = sqlQuery+ titleArg+ typeArg +rateArg +castArg +dirArg +durArg +countArg
 #        sqlQuery = "SELECT * FROM entries WHERE title LIKE \'%test%\'"
         print(">> "+sqlQuery)
         tab = db.session.execute(sqlQuery).all()
+#        print(tab)
         return render_template('showSearch.html', table=tab, count=len(tab))
     else:
         form=BaseForm()
@@ -196,7 +196,7 @@ def deleteEntry(show_id):
 @app.route("/edit/<string:show_id>",methods=['GET', 'POST'])
 def editEntry(show_id="s1", msg=""):
     if request.method=='POST':
-        sqlUpdate = "UPDATE entries SET title= \'"+request.form['mediaName']+"\', media_type= \'"+request.form['mediaType']+"\', director= \'"+request.form['director']+"\', cast_list= \'"+request.form['castList']+"\',  country= \'"+request.form['country']+"\',   release_year= \'"+request.form['yearReleased']+"\',  rating= \'"+request.form['rating']+"\',  duration= \'"+request.form['runtime']+"\'  WHERE show_id=\'"+show_id+"\'"
+        sqlUpdate = "UPDATE entries SET title= \'"+stripApos(request.form['mediaName'])+"\', media_type= \'"+stripApos(request.form['mediaType'])+"\', director= \'"+stripApos(request.form['director'])+"\', cast_list= \'"+stripApos(request.form['castList'])+"\',  country= \'"+request.form['country']+"\',   release_year= \'"+request.form['yearReleased']+"\',  rating= \'"+request.form['rating']+"\',  duration= \'"+request.form['runtime']+"\'  WHERE show_id=\'"+show_id+"\'"
         print(sqlUpdate)
         db.session.execute(sqlUpdate)
         db.session.commit()
@@ -228,7 +228,7 @@ def sortBy(sort, page):
     global clickCnt
     global lastPull
     core = None
-    #ugh. update to 3.10 for match-case :-T
+    #ugh. update to 3.10 for match-case
     if( sort == "title"):
         core = Entries.title
     elif( sort == "type"):
@@ -287,7 +287,8 @@ class Genres(db.Model):
     genre = db.Column(db.String)
 
 
-
+def stripApos(str):
+    return str.replace('\'', '\'\'')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
