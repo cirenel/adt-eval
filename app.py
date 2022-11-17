@@ -99,12 +99,13 @@ def showPage(page=1, tab=None):
 
 
 @app.route("/sortBy/<string:sort>/<int:page>", methods=['GET'])
-def sortBy(sort, page=1, table=lastPull):
+def sortBy(sort, page=1):
     #this is kinda gross. there *has* to be a better way
     global orderBy
    # tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=10)
     global clickCnt
     global lastPull
+    print(lastPull)
     core = None
     #ugh. update to 3.10 for match-case
     if( sort == "title"):
@@ -130,8 +131,8 @@ def sortBy(sort, page=1, table=lastPull):
     orderBy = core
     if lastPull is not None:
         lastPull = lastPull.order_by(core)
-    elif table is not None:
-        lastPull = table.order_by(core)
+    #elif table is not None:
+    #    lastPull = table.order_by(core)
     else:
         lastPull = Entries.query.order_by(core)
     clickCnt = clickCnt+1
