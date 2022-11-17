@@ -1,4 +1,4 @@
-openapi:  3.0.0
+openapi:  3.0.1
 info: 
   title:  adt-eval
   description:  adt-eval Nov-2022
@@ -6,23 +6,22 @@ info:
     name:  Claire Luikart
   version:  "0"
 servers: 
-  -url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
+  - url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
 paths:
   /show/{page}: 
     get: 
       summary:  show paginated table from data.
       parameters: 
-        -name:  page
-        in: path
-        required:  false
-        description:  current pagination index
-        schema: 
-            type:  integer
-            format:  int64
-            minimum:  1
-      responses: 
-        '200': 
-          description:  OK
+        - name:  page
+          in:  path
+          required:  true
+          description: the current page of the pagination
+          schema: 
+              type :  integer
+              minimum:  1
+      responses:
+        '200':
+          description: OK
   /search: 
     get: 
       summary:  provide search form for user input.
@@ -38,14 +37,13 @@ paths:
     get: 
       summary:  applies order by sorting criteria to last queried table based on user input.
       parameters: 
-        -name:  column
-        in:  path
-        required:  true
-        description:  the column specified to order the table by.
-        schema: 
-            type :  string
-            format:  xxxxxx
-            minimum:  1
+        - name:  column
+          in:  path
+          required:  true
+          description:  the column specified to order the table by.
+          schema: 
+              type :  string
+              format:  xxxxxx
       responses: 
         '200': 
           description:  OK
@@ -59,14 +57,14 @@ paths:
     get: 
       summary:  renders form for selected entry and populates fields with entry's existing values.
       parameters: 
-        -name:  showNum
-        in:  path
-        required:  true
-        description:  the unique show id used to retrieve the record from the database.
-        schema: 
-            type :  integer
-            format:  int64
-            minimum:  1
+        - name:  showNum
+          in:  path
+          required:  true
+          description:  the unique show id used to retrieve the record from the database.
+          schema: 
+              type :  integer
+              format:  int64
+              minimum:  1
       responses: 
         '200': 
           description:  OK
@@ -90,14 +88,14 @@ paths:
     post: 
       summary:  deletes entry based on entry id and updates database.
       parameters: 
-        -name:  showNum
-        in:  path
-        required:  true
-        description:  the unique show id used to retrieve the record from the database.
-        schema: 
-            type :  integer
-            format:  int64
-            minimum:  1
+        - name:  showNum
+          in:  path
+          required:  true
+          description:  the unique show id used to retrieve the record from the database.
+          schema: 
+              type :  integer
+              format:  int64
+              minimum:  1
       responses: 
         '200': 
           description:  OK
@@ -109,6 +107,8 @@ components:
         id: 
           type:  integer
           format:  int64
+        title:
+          type: string 
       description:  "contains the listing information for a netflix entry including: 
         title
         rating
