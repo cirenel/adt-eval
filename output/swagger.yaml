@@ -7,35 +7,35 @@ info:
   version: "0"
 servers:
 - url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
-paths: 
+paths:
   /show/{page}:
     get:
       summary: show paginated table from data
       parameters:
         -name : page
         in: path
-        required: false 
+        required: false
         description: current pagination index
         schema:
             type : integer
             format: int64
             minimum: 1
-      responses: 
+      responses:
         '200':
           description: OK
   /search:
     get:
       summary: provide search form for user input
-      responses: 
+      responses:
         '200':
           description: OK
     post:
       summary: queries database based on user input from form
-      responses: 
+      responses:
         '200':
           description: OK
   /sortBy/{column}/{page}:
-    get: 
+    get:
       summary: applies order by sorting criteria to last queried table based on user input
       parameters:
         -name: column
@@ -48,19 +48,19 @@ paths:
             minimum: 1
         -name : page
         in: path
-        required: false 
+        required: false
         description: current pagination index
         schema:
             type : integer
             format: int64
             minimum: 1
-      responses: 
+      responses:
         '200':
           description: OK
   /showFilter:
     post:
       summary: filters last queries table using fields provided by form, displays paginated results
-      responses: 
+      responses:
         '200':
           description: OK
   /edit/{showNum}:
@@ -70,43 +70,43 @@ paths:
         -name: showNum
         in: path
         required: true
-        description: the unique show id used to retrive the record from the database
+        description: the unique show id used to retrieve the record from the database
         schema:
             type : integer
             format: int64
             minimum: 1
-      responses: 
+      responses:
         '200':
           description: OK
     post:
     summary: applies update to database entry based on user input from form
-      responses: 
+      responses:
         '200':
           description: OK
   /add:
     get:
-      summary: renders blank entry form 
-      responses: 
+      summary: renders blank entry form
+      responses:
         '200':
           description: OK
     post:
-      summary: created new entry based on user input from the form 
-      responses: 
+      summary: created new entry based on user input from the form
+      responses:
         '200':
           description: OK
   /delete/{showNum}:
-    post: 
+    post:
       summary: deletes entry based on entry id and updates database
       parameters:
         -name: showNum
         in: path
         required: true
-        description: the unique show id used to retrive the record from the database
+        description: the unique show id used to retrieve the record from the database
         schema:
             type : integer
             format: int64
             minimum: 1
-      responses: 
+      responses:
         '200':
           description: OK
 components:
@@ -117,6 +117,27 @@ components:
         id:
           type: integer
           format: int64
-      description: "contains the listing information for a netflix entry including:\
-        \ \ntitle \nrating\nruntime\ndate of release\ndate added\ndescription\ndirector\
-        \ list\ncast list        "
+        title:
+          type: string
+        description:
+          type: string
+        director:
+          type: string
+        cast_list:
+          type: string
+        year_released:
+          type: integer
+        rating:
+          type: string
+        country:
+          type:string
+      description: "contains the listing information for a netflix entry including:
+        -title
+        -rating
+        -runtime
+        -date of release
+        -date added
+        -description
+        -director
+        -cast list
+        -rating        "
