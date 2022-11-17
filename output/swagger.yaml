@@ -1,26 +1,21 @@
-{
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "adt-eval",
-    "description" : "adt-eval Nov-2022",
-    "version" : "0"
-  },
-  "servers" : [ {
-    "url" : "/"
-  } ],
-  "paths" : { },
-  "components" : {
-    "schemas" : {
-      "Entry" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        },
-        "description" : "contains the listing information for a netflix entry including: \ntitle \nrating\nruntime\ndate of release\ndate added\ndescription\ndirector list\ncast list        "
-      }
-    }
-  }
-}
+openapi: 3.0.1
+info:
+  title: adt-eval
+  description: adt-eval Nov-2022
+  contact:
+    name: Claire Luikart
+  version: "0"
+servers:
+- url: /
+paths: {}
+components:
+  schemas:
+    Entry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+      description: "contains the listing information for a netflix entry including:\
+        \ \ntitle \nrating\nruntime\ndate of release\ndate added\ndescription\ndirector\
+        \ list\ncast list        "
