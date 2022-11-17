@@ -8,9 +8,14 @@ info:
 servers:
 - url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
 paths: 
-  /show:
+  /show/{page}:
     get:
       summary: show paginated table from data
+      parameters:
+        -name : page
+        in: path
+        required: false 
+        description: current pagination index
       responses:
   /search:
     get:
@@ -19,17 +24,31 @@ paths:
     post:
       summary: queries database based on user input from form
       responses:
-  /sortBy:
+  /sortBy/{column}/{page}:
     get: 
       summary: applies order by sorting criteria to last queried table based on user input
+      parameters:
+        -name: column
+        in: path
+        required: true
+        description: the column specified to order the table by
+        -name : page
+        in: path
+        required: false 
+        description: current pagination index
       responses:
   /showFilter:
     post:
       summary: filters last queries table using fields provided by form, displays paginated results
       responses:
-  /edit:
+  /edit/{showNum}:
     get:
       summary: renders form for selected entry and populates fields with entry's existing values
+      parameters:
+        -name: showNum
+        in: path
+        required: true
+        description: the unique show id used to retrive the record from the database
       responses:
     post:
     responses:
@@ -41,9 +60,14 @@ paths:
     post:
       summary: created new entry based on user input from the form 
       responses:
-  /delete:
+  /delete/{showNum}:
     post: 
       summary: deletes entry based on entry id and updates database
+      parameters:
+        -name: showNum
+        in: path
+        required: true
+        description: the unique show id used to retrive the record from the database
       responses:
 components:
   schemas:
