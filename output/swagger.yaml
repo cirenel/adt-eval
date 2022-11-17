@@ -6,8 +6,11 @@ info:
     name: Claire Luikart
   version: "0"
 servers:
-- url: /
-paths: {}
+- url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
+paths: 
+  /show:
+    get:
+      summary: show paginated table from data. 
 components:
   schemas:
     Entry:
