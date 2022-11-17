@@ -87,7 +87,7 @@ def index():
     return render_template('index.html')
 
 @app.route("/show/<int:page>",methods=['GET', 'POST'])
-def showPage(page=1):
+def showPage(page=1, tab=None):
     global orderBy
     global lastPull
     entryPer = 10
@@ -96,6 +96,42 @@ def showPage(page=1):
         lastPull = Entries.query.order_by(orderBy)
     tab = lastPull
     return render_template('show.html', table=tab.paginate(page=page, per_page=10))
+
+
+@app.route("/sortBy/<string:sort>/<int:page>", methods=['GET'])
+def sortBy(sort, page):
+    #this is kinda gross. there *has* to be a better way
+    global orderBy
+   # tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=10)
+    global clickCnt
+    global lastPull
+    core = None
+    #ugh. update to 3.10 for match-case
+    if( sort == "title"):
+        core = Entries.title
+    elif( sort == "type"):
+        core=Entries.media_type
+    elif( sort == "duration"):
+        core = Entries.duration
+    elif( sort == "description"):
+        core = Entries.description
+    elif( sort == "date_add"):
+        core = Entries.date_added
+    elif(sort == "country"):
+        core = Entries.country
+    elif(sort == "genre"):
+        core = Entries.genre
+    elif(sort == "director"):
+        core=Entries.director
+    elif(sort == "cast"):
+        core=Entries.cast_list
+    if( clickCnt % 2 == 1):
+        core = core.desc()
+    orderBy = core
+    lastPull = lastPull.order_by(core)
+    clickCnt = clickCnt+1
+    return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
+
 
 @app.route("/filter", methods=['POST'])
 def showFilter():
@@ -219,40 +255,6 @@ def editEntry(show_id="s1", msg=""):
     form.yearReleased.data = result[0].release_year
     form['submit'].label.text = "Edit Entry"
     return render_template('editEntry.html', form=form, result=result, msg=msg)
-
-@app.route("/sortBy/<string:sort>/<int:page>", methods=['GET'])
-def sortBy(sort, page):
-    #this is kinda gross. there *has* to be a better way
-    global orderBy
-   # tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=10)
-    global clickCnt
-    global lastPull
-    core = None
-    #ugh. update to 3.10 for match-case
-    if( sort == "title"):
-        core = Entries.title
-    elif( sort == "type"):
-        core=Entries.media_type
-    elif( sort == "duration"):
-        core = Entries.duration
-    elif( sort == "description"):
-        core = Entries.description
-    elif( sort == "date_add"):
-        core = Entries.date_added
-    elif(sort == "country"):
-        core = Entries.country
-    elif(sort == "genre"):
-        core = Entries.genre
-    elif(sort == "director"):
-        core=Entries.director
-    elif(sort == "cast"):
-        core=Entries.cast_list
-    if( clickCnt % 2 == 1):
-        core = core.desc()
-    orderBy = core
-    lastPull = Entries.query.order_by(core)
-    clickCnt = clickCnt+1
-    return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
 
 
 #just used to pull the information and check for signs of life
