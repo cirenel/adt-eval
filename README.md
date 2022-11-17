@@ -54,6 +54,7 @@ https://app.swaggerhub.com/apis/CILUKE/eval/0
   
   
 - corrected via decreasing number of worker threads to 1 ~~- investigating inconsistent behavior with table persistence differences in locally hosted v. web hosted versions of app --> missing session info?~~  
+  
 Current Known Issues/Next Steps:  
 - did not configure database to autoincrement primary key --> currently new entries are assigned a primary key in a very hacky manner based on the number of existing entries
 - not crazy about an in repo json with credentials as a means for connection --> try other options
