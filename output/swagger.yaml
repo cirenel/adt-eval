@@ -6,18 +6,18 @@ info:
     name:  Claire Luikart
   version:  "0"
 servers: 
-- url:  https: //adt-eval-dwfsjdz4ua-ue.a.run.app
+  - url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
 paths: 
   /show/{page}: 
     get: 
-      summary:  show paginated table from data
+      summary:  show paginated table from data.
       parameters: 
-        - name :  page
-        in:  path
+        -name:  page
+        in: path
         required:  false
         description:  current pagination index
         schema: 
-            type :  integer
+            type:  integer
             format:  int64
             minimum:  1
       responses: 
@@ -25,23 +25,23 @@ paths:
           description:  OK
   /search: 
     get: 
-      summary:  provide search form for user input
+      summary:  provide search form for user input.
       responses: 
         '200': 
           description:  OK
     post: 
-      summary:  queries database based on user input from form
+      summary:  queries database based on user input from form.
       responses: 
         '200': 
           description:  OK
   /sortBy/{column}/{page}: 
     get: 
-      summary:  applies order by sorting criteria to last queried table based on user input
+      summary:  applies order by sorting criteria to last queried table based on user input.
       parameters: 
         -name:  column
         in:  path
         required:  true
-        description:  the column specified to order the table by
+        description:  the column specified to order the table by.
         schema: 
             type :  string
             format:  xxxxxx
@@ -49,7 +49,7 @@ paths:
         - name :  page
         in:  path
         required:  false
-        description:  current pagination index
+        description:  current pagination index.
         schema: 
             type :  integer
             format:  int64
@@ -59,18 +59,18 @@ paths:
           description:  OK
   /showFilter: 
     post: 
-      summary:  filters last queries table using fields provided by form, displays paginated results
+      summary:  filters last queries table using fields provided by form, displays paginated results.
       responses: 
         '200': 
           description:  OK
   /edit/{showNum}: 
     get: 
-      summary:  renders form for selected entry and populates fields with entry's existing values
+      summary:  renders form for selected entry and populates fields with entry's existing values.
       parameters: 
         - name:  showNum
         in:  path
         required:  true
-        description:  the unique show id used to retrieve the record from the database
+        description:  the unique show id used to retrieve the record from the database.
         schema: 
             type :  integer
             format:  int64
@@ -79,29 +79,29 @@ paths:
         '200': 
           description:  OK
     post: 
-    summary:  applies update to database entry based on user input from form
+    summary:  applies update to database entry based on user input from form.
       responses: 
         '200': 
           description:  OK
   /add: 
     get: 
-      summary:  renders blank entry form
+      summary:  renders blank entry form.
       responses: 
         '200': 
           description:  OK
     post: 
-      summary:  created new entry based on user input from the form
+      summary:  created new entry based on user input from the form.
       responses: 
         '200': 
           description:  OK
   /delete/{showNum}: 
     post: 
-      summary:  deletes entry based on entry id and updates database
+      summary:  deletes entry based on entry id and updates database.
       parameters: 
         - name:  showNum
         in:  path
         required:  true
-        description:  the unique show id used to retrieve the record from the database
+        description:  the unique show id used to retrieve the record from the database.
         schema: 
             type :  integer
             format:  int64
@@ -130,125 +130,6 @@ components:
         rating: 
           type:  string
         country: 
-=======
-openapi: 3.0.1
-info:
-  title: adt-eval
-  description: adt-eval Nov-2022
-  contact:
-    name: Claire Luikart
-  version: "0"
-servers:
-- url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
-paths:
-  /show/{page}:
-    get:
-      summary: show paginated table from data
-      parameters:
-        -name : page
-        in: path
-        required: false
-        description: current pagination index
-        schema:
-            type : integer
-            format: int64
-            minimum: 1
-      responses:
-        '200':
-          description: OK
-  /search:
-    get:
-      summary: provide search form for user input
-    post:
-      summary: queries database based on user input from form
-      responses:
-        '200':
-          description: OK
-  /sortBy/{column}/{page}:
-    get:
-      summary: applies order by sorting criteria to last queried table based on user input
-      parameters:
-        -name: column
-        in: path
-        required: true
-        description: the column specified to order the table by
-        schema:
-            type : string
-            format: xxxxxx
-            minimum: 1
-        -name : page
-        in: path
-        required: false
-        description: current pagination index
-        schema:
-            type : integer
-            format: int64
-            minimum: 1
-      responses:
-        '200':
-          description: OK
-  /showFilter:
-    post:
-      summary: filters last queries table using fields provided by form, displays paginated results
-      responses:
-        '200':
-          description: OK
-  /edit/{showNum}:
-    get:
-      summary: renders form for selected entry and populates fields with entry's existing values
-      parameters:
-        name: showNum
-        in: path
-        required: true
-        description: the unique show id used to retrieve the record from the database
-        schema:
-            type : integer
-            format: int64
-            minimum: 1
-      responses:
-        '200':
-          description: OK
-    post:
-    summary: applies update to database entry based on user input from form
-      responses:
-        '200':
-          description: OK
-  /add:
-    get:
-      summary: renders blank entry form
-      responses:
-        '200':
-          description: OK
-    post:
-      summary: created new entry based on user input from the form
-      responses:
-        '200':
-          description: OK
-  /delete/{showNum}:
-    post:
-      summary: deletes entry based on entry id and updates database
-      parameters:
-        -name: showNum
-        in: path
-        required: true
-        description: the unique show id used to retrieve the record from the database
-        schema:
-            type : integer
-            format: int64
-            minimum: 1
-      responses:
-        '200':
-          description: OK
-components:
-  schemas:
-    Entry:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        title:
->>>>>>> 3591e8929f31a24b3b02ac29e4199ed079766c89
           type: string
       description:  "contains the listing information for a netflix entry including: 
         -title
