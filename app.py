@@ -128,7 +128,7 @@ def sortBy(sort, page=1, table=lastPull):
     if( clickCnt % 2 == 1):
         core = core.desc()
     orderBy = core
-    if table == lastPull:
+    if lastPull is not None:
         lastPull = lastPull.order_by(core)
     elif table is not None:
         lastPull = table.order_by(core)
