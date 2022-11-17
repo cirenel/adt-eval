@@ -47,6 +47,10 @@ POST:
 - takes values from html form and uses them as input for the SQLAlchemy's filter
 - displays resulting values, paginated, using the show page template
 
+External Documentation:
+attempt to add information to swaggerhub --> branch does correctly sync and update. syntax needs polish
+https://app.swaggerhub.com/apis/CILUKE/eval/0 
+
 
 Current Known Issues/Next Steps:  
 - investigating inconsistent behavior with table persistence differences in locally hosted v. web hosted versions of app
