@@ -1,4 +1,4 @@
-openapi:  3.0.1
+openapi:  3.0.0
 info: 
   title:  adt-eval
   description:  adt-eval Nov-2022
@@ -46,14 +46,6 @@ paths:
             type :  string
             format:  xxxxxx
             minimum:  1
-        - name :  page
-        in:  path
-        required:  false
-        description:  current pagination index.
-        schema: 
-            type :  integer
-            format:  int64
-            minimum:  1
       responses: 
         '200': 
           description:  OK
@@ -67,7 +59,7 @@ paths:
     get: 
       summary:  renders form for selected entry and populates fields with entry's existing values.
       parameters: 
-        - name:  showNum
+        -name:  showNum
         in:  path
         required:  true
         description:  the unique show id used to retrieve the record from the database.
@@ -79,7 +71,7 @@ paths:
         '200': 
           description:  OK
     post: 
-    summary:  applies update to database entry based on user input from form.
+      summary:  applies update to database entry based on user input from form.
       responses: 
         '200': 
           description:  OK
@@ -91,14 +83,14 @@ paths:
           description:  OK
     post: 
       summary:  created new entry based on user input from the form.
-      responses: 
+      responses:
         '200': 
           description:  OK
   /delete/{showNum}: 
     post: 
       summary:  deletes entry based on entry id and updates database.
       parameters: 
-        - name:  showNum
+        -name:  showNum
         in:  path
         required:  true
         description:  the unique show id used to retrieve the record from the database.
@@ -117,27 +109,13 @@ components:
         id: 
           type:  integer
           format:  int64
-        title: 
-          type:  string
-        description: 
-          type:  string
-        director: 
-          type:  string
-        cast_list: 
-          type:  string
-        year_released: 
-          type:  integer
-        rating: 
-          type:  string
-        country: 
-          type: string
       description:  "contains the listing information for a netflix entry including: 
-        -title
-        -rating
-        -runtime
-        -date of release
-        -date added
-        -description
-        -director
-        -cast list
-        -rating        "
+        title
+        rating
+        runtime
+        date of release
+        date added
+        description
+        director
+        cast list
+        rating        "
