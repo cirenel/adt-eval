@@ -11,30 +11,40 @@ paths:
   /show:
     get:
       summary: show paginated table from data
+      responses:
   /search:
     get:
       summary: provide search form for user input
+      responses:
     post:
       summary: queries database based on user input from form
+      responses:
   /sortBy:
     get: 
       summary: applies order by sorting criteria to last queried table based on user input
+      responses:
   /showFilter:
     post:
       summary: filters last queries table using fields provided by form, displays paginated results
+      responses:
   /edit:
     get:
       summary: renders form for selected entry and populates fields with entry's existing values
+      responses:
     post:
-      summary: applies update to database entry based on user input from form
+    responses:
+    summary: applies update to database entry based on user input from form
   /add:
     get:
       summary: renders blank entry form 
+        responses:
     post:
       summary: created new entry based on user input from the form 
+      responses:
   /delete:
     post: 
       summary: deletes entry based on entry id and updates database
+      responses:
 components:
   schemas:
     Entry:
