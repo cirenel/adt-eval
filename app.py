@@ -99,7 +99,7 @@ def showPage(page=1, tab=None):
 
 
 @app.route("/sortBy/<string:sort>/<int:page>", methods=['GET'])
-def sortBy(sort, page):
+def sortBy(sort, page=1, table=lastPull):
     #this is kinda gross. there *has* to be a better way
     global orderBy
    # tab = Entries.query.order_by(Entries.show_id).paginate(page=page, per_page=10)
@@ -128,7 +128,12 @@ def sortBy(sort, page):
     if( clickCnt % 2 == 1):
         core = core.desc()
     orderBy = core
-    lastPull = lastPull.order_by(core)
+    if table == lastPull:
+        lastPull = lastPull.order_by(core)
+    elif table is not None:
+        lastPull = table.order_by(core)
+    else:
+        lastPull = Entries.query.order_by(core)
     clickCnt = clickCnt+1
     return render_template('show.html', table=lastPull.paginate(page=page, per_page=10))
 
