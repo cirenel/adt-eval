@@ -8,11 +8,11 @@ info:
 servers: 
   - url: https://adt-eval-dwfsjdz4ua-ue.a.run.app
 paths:
-  /show/{page}: 
+  /show/{pageNum}: 
     get: 
       summary:  show paginated table from data.
       parameters: 
-        - name:  page
+        - name:  pageNum
           in:  path
           required:  true
           description: the current page of the pagination
@@ -44,6 +44,13 @@ paths:
           schema: 
               type :  string
               format:  xxxxxx
+        - name:  page
+          in:  path
+          required:  true
+          description: the current page of the pagination
+          schema: 
+              type :  integer
+              minimum:  1
       responses: 
         '200': 
           description:  OK
@@ -70,6 +77,15 @@ paths:
           description:  OK
     post: 
       summary:  applies update to database entry based on user input from form.
+      parameters: 
+        - name:  showNum
+          in:  path
+          required:  true
+          description:  the unique show id used to retrieve the record from the database.
+          schema: 
+              type :  integer
+              format:  int64
+              minimum:  1
       responses: 
         '200': 
           description:  OK
