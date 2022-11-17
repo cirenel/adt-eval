@@ -26,9 +26,6 @@ paths:
   /search:
     get:
       summary: provide search form for user input
-      responses:
-        '200':
-          description: OK
     post:
       summary: queries database based on user input from form
       responses:
@@ -67,7 +64,7 @@ paths:
     get:
       summary: renders form for selected entry and populates fields with entry's existing values
       parameters:
-        -name: showNum
+        name: showNum
         in: path
         required: true
         description: the unique show id used to retrieve the record from the database
